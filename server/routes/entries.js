@@ -11,6 +11,6 @@ router.post("/entries", verifyToken, createEntry);
 router.get("/entries", verifyToken, getUserEntries);
 
 // UPDATE
-router.patch("/entries", verifyToken, updateEntry);
+router.patch("/entries/:id", verifyToken, updateEntry);
 
 export default router;
