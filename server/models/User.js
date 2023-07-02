@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+const numRecentEntries = 31;
+
 const userSchema = new mongoose.Schema({
     displayName: {
         type: String,
@@ -16,22 +18,18 @@ const userSchema = new mongoose.Schema({
         required: true,
         min: 8
     },
-    entries: [
-        {
+    entries: {    
+        type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Entry'
-        }
-    ]
-})
+        }],
+        validate : [isNumEntriesBounded, '{PATH} exceeds the limit of {numRecentEntries}']
+    }
+});
 
-// userSchema.set('toJSON', {
-//     transform: (document, returnedObject) => {
-//         returnedObject.id = returnedObject._id.toString()
-//         delete returnedObject._id
-//         delete returnedObject.__v
-//         delete returnedObject.passwordHash
-//     }
-// })
+function isNumEntriesBounded(val) {
+    return val.length <= numRecentEntries;
+}
 
 const User = mongoose.model('User', userSchema)
 export default User;

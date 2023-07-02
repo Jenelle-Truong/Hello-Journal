@@ -8,10 +8,10 @@ import helmet from "helmet";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
+import entryRoutes from "./routes/entries.js";
 import { register } from "./controllers/auth.js";
 
-
-// configutations
+// configurations
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
@@ -27,6 +27,7 @@ app.use(cors());
 // define routes
 app.post("/auth/register", register);
 app.use("/auth", authRoutes);
+app.use("/entries", entryRoutes)
 
 const PORT = process.env.PORT || 6001;
 mongoose.connect(process.env.MONGODB_URL, {

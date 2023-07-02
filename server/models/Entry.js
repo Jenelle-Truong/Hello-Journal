@@ -1,35 +1,15 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
-const url = process.env.MONGODB_URI
+const entrySchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        content: String,
+    }, { timestamps : true } 
+);
 
-console.log('connecting to', url)
+const Entry = mongoose.model('Entry', entrySchema)
 
-mongoose.connect(url)
-    .then(result => {
-        console.log('connected to MongoDB')
-    })
-    .catch((error) => {
-        console.log('error connecting to MongoDB: ', error.message)
-    })
-
-const entrySchema = new mongoose.Schema({
-    content: String,
-    date: Date,  
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }
-})
-
-// customize the returned JSON object to remove sensitive information
-entrySchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        // remove _id Object
-        delete returnedObject._id
-        // remove versionKey (__v) property
-        delete returnedObject.__v
-    }
-})
-
-module.exports = mongoose.model('Entry', entrySchema)
+export default Entry;
