@@ -20,7 +20,6 @@ const registerSchema = yup.object().shape({
 
 // added displayName to loginSchema due to formType being flipped prior to form submission
 const loginSchema = yup.object().shape({
-    displayName: yup.string().required("required"), 
     email: yup.string().email("invalid email").required("required"), 
     password: yup.string().required("required")
 });
@@ -45,6 +44,7 @@ const Form = () => {
     const isRegister = formType === "register";
 
     const register = async (values, onSubmitProps) => {
+        console.log("in register")
         const savedUserResponse = await fetch(
             "http://localhost:3001/auth/register", 
             {
@@ -63,8 +63,12 @@ const Form = () => {
     };
 
     const login = async (values, onSubmitProps) => {
+        console.log("in login")
+        for (let value in values) {
+            console.log(value, values[value])
+        }
         const loggedInResponse = await fetch(
-            "http:localhost:3001/auth/login", 
+            "http://localhost:3001/auth/login", 
             {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },
@@ -97,7 +101,7 @@ const Form = () => {
         <Formik
             onSubmit={handleFormSubmit}
             initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
-            validationSchema={isLogin ? registerSchema : loginSchema}
+            validationSchema={isLogin ? loginSchema : registerSchema}
         >
             {({
                 values, 

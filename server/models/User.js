@@ -5,7 +5,6 @@ const numRecentEntries = 31;
 const userSchema = new mongoose.Schema({
     displayName: {
         type: String,
-        required: true,
         max: 50
     },
     email: {
