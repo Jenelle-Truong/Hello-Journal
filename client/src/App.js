@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/home';
-import LoginPage from './pages/login';
+import SignInAndUpPage from 'pages/signInAndUp';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
@@ -15,7 +15,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<SignInAndUpPage />} />
           <Route 
             path="/home" 
             element={<HomePage />} />
