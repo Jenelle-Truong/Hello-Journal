@@ -81,7 +81,7 @@ const Form = () => {
         if (loggedIn) {
             dispatch(
                 setLogin({
-                    user: loggedIn.user,
+                    user: loggedIn.registeredUser,
                     token: loggedIn.token
                 })
             );

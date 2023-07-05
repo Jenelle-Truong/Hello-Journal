@@ -18,7 +18,8 @@ function App() {
           <Route path="/" element={<SignInAndUpPage />} />
           <Route 
             path="/home" 
-            element={<HomePage />} />
+            element={isAuth ? <HomePage /> : <Navigate to="/" />} 
+          />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
