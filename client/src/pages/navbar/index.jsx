@@ -2,18 +2,12 @@ import { useState } from "react";
 import {
     Box, 
     IconButton, 
-    InputBase,
-    InputLabel,
     Typography,
-    Select,
-    MenuItem,
-    FormControl,
-    useTheme,
     useMediaQuery,
     Button
 } from "@mui/material";
 import { Close, Menu } from "@mui/icons-material/"
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
@@ -22,11 +16,7 @@ const Navbar = () => {
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state) => state.user);
     const isNonMobileScreen = useMediaQuery("(min-width: 1000px)");
-
-    const theme = useTheme();
-    const name = `${user.displayName}`;
 
     return (
     <FlexBetween padding="0.5em 2%">
@@ -66,25 +56,6 @@ const Navbar = () => {
             >
                 Log out
             </Typography>
-            {/* <InputLabel><Typography>{name}</Typography></InputLabel>
-            <FormControl>
-                <Select
-                    value={name}
-                    label={name}
-                    sx={{
-                        width: "50px",
-                        borderRadius: "0.25rem",
-                        "& .MuiSvgIcon-root":{
-                            pr: "0.25rem",
-                            width: "5rem"
-                        }
-                    }}
-                    input={<InputBase />}
-                    >
-                    <MenuItem>Settings</MenuItem>
-                    <MenuItem onClick={() => dispatch(setLogout())}>Log out</MenuItem>
-                    </Select>
-            </FormControl> */}
         </FlexBetween>
     ) : (
         <IconButton
