@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState, useContext, createContext } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useSelector } from "react-redux";
-import { useFormikContext, Formik } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
 import { Box, Button, TextField, useMediaQuery, Typography } from "@mui/material";
 import dayjs from "dayjs";
@@ -18,120 +18,12 @@ const initialValuesEntry = {
     content: ""
 }
 
-const context = createContext();
-
-const UpdateFormValues = () => {
-    const [mode, setMode, dayLabel, setDayLabel, content, setContent, date, token, user] = useContext(context)
-    const month = date.month()
-    const day = date.date();
-    const year = date.year();
-    const { values, resetForm, setFieldValue } = useFormikContext();
-    const getEntry = useCallback( async() => {
-            const entryResponse = await fetch(
-                `http://localhost:3001/entries/${user._id}/${month}/${day}/${year}`,
-                {
-                    method: "GET",
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            );
-            if (!entryResponse.ok) {
-                // const entryData = await entryResponse.json();
-                // console.log("accepted promise, setting mode to update")
-                // console.log(entryData);
-                // setMode("update");
-                // setContent(entryData.content);
-                // setDayLabel(entryData.label);
-                entryResponse
-                    .json()
-                    .then(entryResponse => {
-                        setMode("update")
-                        setContent(entryResponse.content)
-                        setDayLabel(entryResponse.label)
-                    }) 
-                console.log("finished updating state in callback")
-            } else {
-                console.log("rejected promise, setting mode to create");
-                setMode("create");
-                setContent("");
-                setDayLabel("")
-            };
-            setFieldValue("content", content)
-            setFieldValue("label", dayLabel)
-            
-            resetForm({
-                values: {
-                    content, 
-                    dayLabel
-                }
-            })
-        }, [date]);
-
-        // useEffect(() => {
-        //     getEntry()
-        //     console.log(`content ${content}`)
-        //     console.log(`label ${dayLabel}`)
-        //     // setFieldValue("content", content)
-        //     // setFieldValue("label", dayLabel)
-            
-        //     // resetForm({
-        //     //     values: {
-        //     //         content, 
-        //     //         dayLabel
-        //     //     }
-        //     // })
-        // }, [getEntry])
-        // useEffect(async() => {
-        //     const entryResponse = await fetch(
-        //         `http://localhost:3001/entries/${user._id}/${month}/${day}/${year}`,
-        //         {
-        //             method: "GET",
-        //             headers: { Authorization: `Bearer ${token}` }
-        //         }
-        //     );
-        //     if (!entryResponse.ok) {
-        //         // const entryData = await entryResponse.json();
-        //         // console.log("accepted promise, setting mode to update")
-        //         // console.log(entryData);
-        //         // setMode("update");
-        //         // setContent(entryData.content);
-        //         // setDayLabel(entryData.label);
-        //         entryResponse
-        //             .json()
-        //             .then(entryResponse => {
-        //                 setMode("update")
-        //                 setContent(entryResponse.content)
-        //                 setDayLabel(entryResponse.label)
-        //             }) 
-        //         console.log("finished updating state in callback")
-        //     } else {
-        //         console.log("rejected promise, setting mode to create");
-        //         setMode("create");
-        //         setContent("");
-        //         setDayLabel("")
-        //     };
-        //     setFieldValue("content", content)
-        //     setFieldValue("label", dayLabel)
-            
-        //     resetForm({
-        //         values: {
-        //             content, 
-        //             dayLabel
-        //         }
-        //     })
-        // }, [])
-        useEffect(() => {
-            setFieldValue("content", values["content"])
-            setFieldValue("label", values[dayLabel])
-        }, [values]);
-    return null;
-}
-
 const EntryForm = () => {
     const [mode, setMode] = useState("create");
     const [date, setDate] = useState(dayjs());
     const [dayLabel, setDayLabel] = useState("");
     const [content, setContent] = useState("");
-    const [isRun, setIsRun] = useState(false);
+    const [postId, setPostId] = useState(undefined);
     const month = date.month()
     const day = date.date();
     const year = date.year();
@@ -150,29 +42,22 @@ const EntryForm = () => {
                 }
             );
             if (entryResponse.ok) {
-                // const entryData = await entryResponse.json();
-                // console.log("accepted promise, setting mode to update")
-                // console.log(entryData);
-                // setMode("update");
-                // setContent(entryData.content);
-                // setDayLabel(entryData.label);
-                entryResponse
-                    .json()
-                    .then(entryResponse => {
-                        flushSync(() => {
-                        setMode("update")
-                        setContent(entryResponse.content)
-                        setDayLabel(entryResponse.label)
-
-                        })
-                    }) 
+                const entryData = await entryResponse.json();
+                console.log("accepted promise, setting mode to update")
+                console.log(entryData);
+                flushSync(() => {
+                    setMode("update");
+                    setContent(entryData.content);
+                    setDayLabel(entryData.label);
+                    setPostId(entryData._id);
+                })
                 console.log("finished updating state in callback")
             } else {
                 console.log("rejected promise, setting mode to create");
                 flushSync(() => {
-                setMode("create");
-                setContent("");
-                setDayLabel("");
+                    setMode("create");
+                    setContent("");
+                    setDayLabel("");
                 })
             }
         }, [month, day, year]);
@@ -181,64 +66,19 @@ const EntryForm = () => {
             getEntry()
         }, [getEntry])
 
-    // useEffect(() => {
-    //     const getEntry2 = async() => {
-    //         const entryResponse = await fetch(
-    //             `http://localhost:3001/entries/${user._id}/${month}/${day}/${year}`,
-    //             {
-    //                 method: "GET",
-    //                 headers: { Authorization: `Bearer ${token}` }
-    //             }
-    //         );
-    //         if (entryResponse.ok) {
-    //             // const entryData = await entryResponse.json();
-    //             // console.log("accepted promise, setting mode to update")
-    //             // console.log(entryData);
-    //             // setMode("update");
-    //             // setContent(entryData.content);
-    //             // setDayLabel(entryData.label);
-    //             entryResponse
-    //                 .json()
-    //                 .then(entryResponse => {
-    //                     setMode("update")
-    //                     setContent(entryResponse.content)
-    //                     setDayLabel(entryResponse.label)
-    //                     setFieldValue("content", entryResponse.content)
-    //                     setFieldValue("dayLabel", entryResponse.label)
-    //                 }) 
-    //             console.log("finished updating state in callback")
-    //         } else {
-    //             console.log("rejected promise, setting mode to create");
-    //             setMode("create");
-    //             setContent("");
-    //             setDayLabel("");
-    //             setFieldValue("content", "")
-    //             setFieldValue("dayLabel", "")
-    //             }
-    //     };
-
-    // }, []);
-
     const postEntry = async (values, onSubmitProps) => {
         const formData = new FormData();
         console.log(user._id);
         formData.append("userId", user._id);
-        formData.append("dayLabel", values["dayLabel"]);
-        formData.append("content", values["content"]);
+        formData.append("dayLabel", dayLabel);
+        formData.append("content", content);
         formData.append("month", month);
         formData.append("day", day);
         formData.append("year", year);
         console.log("making POST request")
-        console.log(values["content"])
-        console.log(values["dayLabel"])
-        // for (let value in values) {
-        //     formData.append(value, values[value])
-        //     console.log(value, values[value])
-        // }
-        // formData.append("date", date);
 
         const savedEntryResponse = await fetch(
-            "http://localhost:3001/entries",
+            "http://localhost:3001/entries/",
             {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}`,
@@ -249,21 +89,18 @@ const EntryForm = () => {
 
         const savedEntry = await savedEntryResponse.json();
         if (savedEntry) {
+            setMode("update")
             console.log("properly saved")
         }
     };
 
     const putEntry = async (values, onSubmitProps) => {
         const formData = new FormData();
-        formData.append("userId", user);
-        formData.append("label", values["label"]);
-        formData.append("content", values["content"]);
-        formData.append("month", month);
-        formData.append("day", day);
-        formData.append("year", year);
+        formData.append("label", dayLabel);
+        formData.append("content", content);
 
         const updatedEntryResponse = await fetch(
-            "http://localhost:3001/entries",
+            `http://localhost:3001/entries/${postId}`,
             {
                 method: "PUT",
                 headers: { Authorization: `Bearer ${token}` },
@@ -274,34 +111,31 @@ const EntryForm = () => {
         const updatedEntry = await updatedEntryResponse.json();
         if (updatedEntry) {
             console.log("properly updated")
-            setMode("updated")
+            setMode("update")
         }
     }
 
     const handleFormSubmit = async (values, onSubmitProps) => {
+        console.log("clicked button")
         if (isEditMode) await postEntry(values, onSubmitProps)
         if (isUpdateMode) await putEntry(values, onSubmitProps)
     }
 
+
     return (
-        <context.Provider value={[mode, setMode, dayLabel, setDayLabel, content, setContent, date, token, user]} >
         <Formik
             onSubmit={handleFormSubmit}
             initialValues={initialValuesEntry}
             validationSchema={entrySchema}
         >
             {({
-                values, 
                 errors, 
                 touched, 
                 handleBlur, 
                 handleChange, 
                 handleSubmit,
-                setFieldValue,
-                resetForm
             }) => (
                 <form onSubmit={handleSubmit}>
-                    {/* <UpdateFormValues /> */}
                     <Box
                         width="100%"
                         padding="2rem 6%"
@@ -317,86 +151,7 @@ const EntryForm = () => {
                                     value={date}
                                     onChange={async(newDate) => {
                                         setDate(newDate)
-        // if (isRun) {
-        //     return;
-        // }
-        // setIsRun(true);
-        // fetch(
-        //         `http://localhost:3001/entries/${user._id}/${month}/${day}/${year}`,
-        //         {
-        //             method: "GET",
-        //             headers: { Authorization: `Bearer ${token}` }
-        //         }
-        // ).then(entryResponse => {
-        //     if (entryResponse.ok) {
-        //         const entryData = entryResponse.json();
-        //         console.log("accepted promise, setting mode to update")
-        //         console.log(entryData);
-        //         setMode("update");
-        //         setContent(entryData.content);
-        //         setDayLabel(entryData.label);
-        //     } else {
-        //         console.log("rejected promise, setting mode to create");
-        //         setMode("create");
-        //         setContent("");
-        //         setDayLabel("");
-        //     }
-        //     resetForm({
-        //         values: {
-        //             content, 
-        //             dayLabel
-        //         }
-        //     }) 
-        //     setIsRun(false);
-        // })
-                //                         getEntry()
-                // resetForm({
-                //     values: {
-                //         content, 
-                //         dayLabel
-                //     }
-                // })
-
-            // const entryResponse = await fetch(
-            //     `http://localhost:3001/entries/${user._id}/${month}/${day}/${year}`,
-            //     {
-            //         method: "GET",
-            //         headers: { Authorization: `Bearer ${token}` }
-            //     }
-            // );
-            // if (entryResponse.ok) {
-            //     const entryData = await entryResponse.clone().json();
-            //     console.log("accepted promise, setting mode to update")
-            //     console.log(entryData);
-            //     setMode("update");
-            //     setContent(entryData.content);
-            //     setDayLabel(entryData.label);
-            //     entryResponse
-            //         .json()
-            //         .then(entryResponse => {
-            //             setMode("update")
-            //             setContent(entryResponse.content)
-            //             setDayLabel(entryResponse.label)
-            //         }) 
-            //     setFieldValue("content", entryResponse.content)
-            //     setFieldValue("label", entryResponse.dayLabel)
-            //     console.log("finished updating state in callback")
-            // } else {
-            //     console.log("rejected promise, setting mode to create");
-            //     setMode("create");
-            //     setContent("");
-            //     setDayLabel("");
-            //     setFieldValue("content", "")
-            //     setFieldValue("label", "")
-            // }
-            //     resetForm({
-            //         values: {
-            //             content, 
-            //             dayLabel
-            //         }
-            //     })
-                                        // console.log("date changed")
-                                        }
+                                    }
                                     }
                                 />
                             </LocalizationProvider>
@@ -413,8 +168,10 @@ const EntryForm = () => {
                             <Typography>Today was:</Typography>
                             <TextField
                                 label="Adjective"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
+                                onBlur={(e) => handleBlur(e)}
+                                onChange={(e) => {
+                                    handleChange(e)
+                                    setDayLabel(e.target.value)}}
                                 value={dayLabel}
                                 name="dayLabel"
                                 error={
@@ -428,8 +185,10 @@ const EntryForm = () => {
                                 multiline
                                 minRows="35"
                                 maxRows="35"
-                                onBlur={handleBlur}
-                                onChange={(e) => setContent(e.target.value)}
+                                onBlur={(e) => handleBlur(e)}
+                                onChange={(e) => {
+                                    handleChange(e)
+                                    setContent(e.target.value)}}
                                 value={content}
                                 name="content"
                                 error={
@@ -460,7 +219,6 @@ const EntryForm = () => {
                 </form>
             )}
         </Formik>
-        </context.Provider>
     )
 }
 

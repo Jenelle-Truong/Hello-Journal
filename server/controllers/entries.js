@@ -33,7 +33,9 @@ export const createEntry = async (req, res) => {
         )
 
         // return most recent posts
-        const mostRecentPosts = await User.findById(userId).entries;
+        const mostRecentPosts = await User.findById(userId);
+        console.log(mostRecentPosts)
+        console.log(mostRecentPosts.toObject().entries)
         res.status(201).json(mostRecentPosts);
 
     } catch (err) {
@@ -72,12 +74,12 @@ export const getUserEntries = async (req, res) => {
 export const updateEntry = async (req, res) => {
     try {
         const { id } = req.params;
-        const { updatedLabel, updatedContent } = req.body;
+        const { label, content } = req.body;
         const updatedEntry = await Entry.findByIdAndUpdate(
             id, 
             { 
-                label: updatedLabel,
-                content: updatedContent 
+                label,
+                content
             }
         );
         res.status(200).json(updatedEntry);
