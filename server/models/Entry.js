@@ -4,9 +4,26 @@ const entrySchema = new mongoose.Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         },
-        content: String,
+        label: {
+            type: String,
+            required: true
+        },
+        month: {
+            type: Number,
+            required: true
+        },
+        day: {
+            type: Number,
+            required: true
+        },
+        year: {
+            type: Number,
+            required: true
+        },
+        content: { type: String },
     }, { timestamps : true } 
 );
 

@@ -6,10 +6,16 @@ const numRecentEntries = 31;
 // Create
 export const createEntry = async (req, res) => {
     try {
-        const { userId, content } = req.body;
+        console.log(req.body)
+        const { userId, dayLabel, month, day, year, content } = req.body;
+        console.log(userId)
         const user = await User.findById(userId);
         const newEntry = new Entry({
-            user,
+            userId,
+            label: dayLabel, 
+            month, 
+            day, 
+            year,
             content
         })
         await newEntry.save();
@@ -27,7 +33,7 @@ export const createEntry = async (req, res) => {
         )
 
         // return most recent posts
-        const mostRecentPosts = await User.findById().entries;
+        const mostRecentPosts = await User.findById(userId).entries;
         res.status(201).json(mostRecentPosts);
 
     } catch (err) {
@@ -36,6 +42,22 @@ export const createEntry = async (req, res) => {
 }
 
 // Read
+export const getSpecificEntry = async (req, res) => {
+    try {
+        const { userId, month, day, year } = req.params;
+        const entry = await Entry.find({ userId, month, day, year });
+        console.log("here")
+        console.log(entry[0]);
+        if (entry.length === 0) {
+            res.status(404).json({ message: "no entries found" })
+        } else {
+            res.status(200).json(entry[0])
+        };
+    } catch (err) {
+        res.status(404).json({ message: err.messaage })
+    }
+}
+
 export const getUserEntries = async (req, res) => {
     try {
         const { userId } = req.body;
@@ -50,10 +72,13 @@ export const getUserEntries = async (req, res) => {
 export const updateEntry = async (req, res) => {
     try {
         const { id } = req.params;
-        const { updatedContent } = req.body;
+        const { updatedLabel, updatedContent } = req.body;
         const updatedEntry = await Entry.findByIdAndUpdate(
             id, 
-            { content: updatedContent }
+            { 
+                label: updatedLabel,
+                content: updatedContent 
+            }
         );
         res.status(200).json(updatedEntry);
     } catch (err) {

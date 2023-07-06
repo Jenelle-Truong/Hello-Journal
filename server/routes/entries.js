@@ -1,16 +1,16 @@
 import express from "express";
-import { createEntry, getUserEntries, updateEntry } from "../controllers/entries.js";
+import { createEntry, getSpecificEntry, updateEntry } from "../controllers/entries.js";
 import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // CREATE
-router.post("/entries", verifyToken, createEntry);
+router.post("/", verifyToken, createEntry);
 
 // READ
-router.get("/entries", verifyToken, getUserEntries);
+router.get("/:userId/:month/:day/:year", verifyToken, getSpecificEntry);
 
 // UPDATE
-router.patch("/entries/:id", verifyToken, updateEntry);
+router.patch("/:id", verifyToken, updateEntry);
 
 export default router;
