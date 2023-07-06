@@ -149,7 +149,7 @@ const EntryForm = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateCalendar
                                     value={date}
-                                    onChange={async(newDate) => {
+                                    onChange={(newDate) => {
                                         setDate(newDate)
                                     }
                                     }
