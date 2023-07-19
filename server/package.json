@@ -12,6 +12,7 @@
   "author": "Jenelle Truong",
   "license": "ISC",
   "dependencies": {
+    "@xenova/transformers": "^2.4.1",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
