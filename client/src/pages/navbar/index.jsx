@@ -54,7 +54,6 @@ const Navbar = () => {
             >
                 Analytics
             </Typography>
-            <Typography>Settings</Typography>
             <Typography
                 onClick={()=> dispatch(setLogout())}
                 sx={{
@@ -99,7 +98,6 @@ const Navbar = () => {
                 alignItems="center"
                 gap="3rem"
             >
-                <Button>Settings</Button>
                 <Button onClick={() => navigate("/analytics")}
                 >Analytics</Button>
                 <Button onClick={() => dispatch(setLogout())}
