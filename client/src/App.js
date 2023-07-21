@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/home';
 import SignInAndUpPage from 'pages/signInAndUp';
+import AnalyticsPage from 'pages/analytics';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
@@ -19,6 +20,10 @@ function App() {
           <Route 
             path="/home" 
             element={isAuth ? <HomePage /> : <Navigate to="/" />} 
+          />
+          <Route 
+            path="/analytics"
+            element={isAuth ? <AnalyticsPage /> : <Navigate to="/" />}
           />
         </Routes>
       </ThemeProvider>

@@ -25,11 +25,10 @@ export const analyzeSentiment = async (req, res) => {
         console.log('most recent posts')
 
         const classifier = await SentimentAnalysisPipeline.getInstance()
-        var responses = []
-        var dates = []
+        var data = []
         for (let i = 0; i < mostRecentPosts.length; i++) {
             let post = await Entry.findById(mostRecentPosts[i]);
-            dates.push(post.createdAt);
+            // dates.push(post.createdAt);
             let text = post.label;
             console.log(text);
             // cached classifier returns JSON array of size 1 containing the most probable sentiment
@@ -37,11 +36,14 @@ export const analyzeSentiment = async (req, res) => {
             console.log(response);
             let { label } = response[0];
             let sentiment = Number(label.slice(0, 1)); 
-            responses.push(sentiment); 
+            // responses.push(sentiment); 
+            let date = new Date(post.year, post.month, post.day)
+            console.log(`${date}`)
+            console.log(sentiment)
+            data.push({ date: date,  rank: sentiment , label: post.label });
         }
-        console.log(`dates ${dates}`)
-        console.log(`responses ${responses}`)
-        res.status(200).json({ dates, responses })
+        console.log(`data ${data}`)
+        res.status(200).json(data)
     } catch (err) {
         res.status(404).json({ message: err.message })
     }

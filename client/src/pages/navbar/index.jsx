@@ -44,7 +44,16 @@ const Navbar = () => {
             >
                 Home
             </Typography>
-            <Typography>Analytics</Typography>
+            <Typography
+                onClick={() => navigate("/analytics")}
+                sx={{
+                    "&:hover": {
+                        cursor: "pointer"
+                    }
+                }}
+            >
+                Analytics
+            </Typography>
             <Typography>Settings</Typography>
             <Typography
                 onClick={()=> dispatch(setLogout())}
@@ -91,6 +100,8 @@ const Navbar = () => {
                 gap="3rem"
             >
                 <Button>Settings</Button>
+                <Button onClick={() => navigate("/analytics")}
+                >Analytics</Button>
                 <Button onClick={() => dispatch(setLogout())}
                 >Log out</Button>
             </FlexBetween>
