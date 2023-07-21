@@ -1,10 +1,9 @@
-import { useState } from "react";
 import {
     Box, 
     Button,
     TextField,
+    Typography,
     useMediaQuery,
-    Typography, 
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -12,22 +11,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 
-const registerSchema = yup.object().shape({
-    displayName: yup.string().required("required"), 
-    email: yup.string().email("invalid email").required("required"),
-    password: yup.string().required("required")
-});
-
 const loginSchema = yup.object().shape({
     email: yup.string().email("invalid email").required("required"), 
     password: yup.string().required("required")
 });
-
-const initialValuesRegister = {
-    displayName: "",
-    email: "",
-    password: ""
-}
 
 const initialValuesLogin = {
     email: "",
@@ -35,31 +22,9 @@ const initialValuesLogin = {
 }
 
 const Form = () => {
-    const [formType, setFormType] = useState("login");
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isNonMobile = useMediaQuery("(min-width:600px)");
-    const isLogin = formType === "login";
-    const isRegister = formType === "register";
-
-    const register = async (values, onSubmitProps) => {
-        console.log("in register")
-        const savedUserResponse = await fetch(
-            "http://localhost:3001/auth/register", 
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values)
-            }
-        );
-
-        const savedUser = await savedUserResponse.json();
-        onSubmitProps.resetForm();
-
-        if (savedUser) {
-            setFormType("login");
-        }
-    };
 
     const login = async (values, onSubmitProps) => {
         console.log("in login")
@@ -92,15 +57,14 @@ const Form = () => {
         for (let value in values) {
             console.log(value, values[value])
         }
-        if (isLogin) await login(values, onSubmitProps)
-        if (isRegister) await register(values, onSubmitProps)
+        await login(values, onSubmitProps)
     }
 
     return (
         <Formik
             onSubmit={handleFormSubmit}
-            initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
-            validationSchema={isLogin ? loginSchema : registerSchema}
+            initialValues={initialValuesLogin}
+            validationSchema={loginSchema}
         >
             {({
                 values, 
@@ -109,7 +73,6 @@ const Form = () => {
                 handleBlur, 
                 handleChange,
                 handleSubmit,
-                resetForm
             }) => (
                 <form onSubmit={handleSubmit}>
                     <Box
@@ -120,22 +83,14 @@ const Form = () => {
                             "& > div": { gridColumn: isNonMobile ? undefined : "span 4"}
                         }}
                     >
-                        {isRegister && (
-                            <>
-                            <TextField
-                            label="Name"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.displayName}
-                            name="displayName"
-                            error={
-                                Boolean(touched.displayName) && Boolean(errors.displayName)
-                            }
-                            helperText={touched.displayName && errors.displayName}
-                            sx={{ gridColumn: "span 4"}}
-                            />
-                            </>
-                        )}
+                        <Typography
+                            sx={{
+                                textAlign: "center",
+                                gridColumn: "span 4"
+                            }}
+                        >
+                        * WEBAPP DEMO * 
+                        </Typography>
                         <TextField
                             label="Email"
                             onBlur={handleBlur}
@@ -173,26 +128,8 @@ const Form = () => {
                                 color: "black"
                             }}
                         >
-                            {isLogin ? "LOGIN" : "REGISTER"}
+                           LOGIN 
                         </Button>
-                        <Typography
-                            onClick={() => {
-                                setFormType(isLogin ? "register" : "login");
-                                console.log(formType)
-                                resetForm();
-                            }}
-                            sx={{
-                                textDecoration: "underline",
-                                "&:hover": {
-                                    cursor: "pointer"
-                                }
-                            }}
-                        >
-                            {isLogin
-                                ? "Don't have an account? Sign up here." 
-                                : "Already have an account? Sign in here."
-                            }
-                        </Typography>
                     </Box>
                 </form>
             )}

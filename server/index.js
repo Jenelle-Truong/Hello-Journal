@@ -11,7 +11,6 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import entryRoutes from "./routes/entries.js";
 import analyticsRoutes from "./routes/analytics.js";
-import { register } from "./controllers/auth.js";
 
 // configurations
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +28,6 @@ app.use(multer().array())
 app.use(cors());
 
 // define routes
-app.post("/auth/register", register);
 app.use("/auth", authRoutes);
 app.use("/entries", entryRoutes);
 app.use("/analytics", analyticsRoutes);
