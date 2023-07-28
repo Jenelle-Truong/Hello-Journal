@@ -20,23 +20,15 @@ export const analyzeSentiment = async (req, res) => {
                 }
             )
             let responseData = await response.json();
-            console.log("response data");
-            console.log(responseData);
             let maxScore = 0;
             let sentiment = "";
-            console.log(responseData[0].length)
             for (let j = 0; j < responseData[0].length; j++) {
-                console.log(responseData[0][j])
                 let { label, score } = responseData[0][j];
-                console.log(`sentiment label ${label}`);
-                console.log(score)
                 if (score > maxScore) {
                     maxScore = score
                     sentiment = Number(label.slice(0, 1));
-                    console.log(`in if statement ${sentiment}`); 
                 }
             }
-            console.log(sentiment)
             let date = new Date(post.year, post.month, post.day)
             data.push({ date: date,  rank: sentiment , label: post.label });
         }
