@@ -32,7 +32,7 @@ const Form = () => {
             console.log(value, values[value])
         }
         const loggedInResponse = await fetch(
-            "http://localhost:3001/auth/login", 
+            "http://localhost:3001/api/auth/login", 
             {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },

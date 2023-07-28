@@ -35,7 +35,7 @@ const EntryForm = () => {
 
     const getEntry = useCallback(async() => {
             const entryResponse = await fetch(
-                `http://localhost:3001/entries/${user._id}/${month}/${day}/${year}`,
+                `http://localhost:3001/api/entries/${user._id}/${month}/${day}/${year}`,
                 {
                     method: "GET",
                     headers: { Authorization: `Bearer ${token}` }
@@ -78,7 +78,7 @@ const EntryForm = () => {
         console.log("making POST request")
 
         const savedEntryResponse = await fetch(
-            "http://localhost:3001/entries/",
+            "http://localhost:3001/api/entries/",
             {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}`,
@@ -100,7 +100,7 @@ const EntryForm = () => {
         formData.append("content", content);
 
         const updatedEntryResponse = await fetch(
-            `http://localhost:3001/entries/${postId}`,
+            `http://localhost:3001/api/entries/${postId}`,
             {
                 method: "PUT",
                 headers: { Authorization: `Bearer ${token}` },

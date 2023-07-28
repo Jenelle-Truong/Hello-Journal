@@ -10,7 +10,7 @@ const LineGraph = () => {
 
     useEffect(() => {
         fetch( 
-            `http://localhost:3001/analytics/${user._id}`,
+            `http://localhost:3001/api/analytics/${user._id}`,
             {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` }

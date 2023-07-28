@@ -28,11 +28,11 @@ app.use(multer().array())
 app.use(cors());
 
 // define routes
-app.use("/auth", authRoutes);
-app.use("/entries", entryRoutes);
-app.use("/analytics", analyticsRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/entries", entryRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
-const PORT = process.env.PORT || 6001;
+const PORT = process.env.PORT || 3001;
 mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
