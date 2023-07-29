@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
@@ -47,7 +46,9 @@ const LineGraph = () => {
                     }
                 }}
             > 
-                <XAxis dataKey="date" type="category" tick={{fontSize: 13, fill: "#82ca9d"}} tickFormatter={(date) => dayjs(date).format("MM-DD")}/>
+                <XAxis dataKey="date" type="category" tick={{fontSize: 13, fill: "#82ca9d"}} tickFormatter={(date) => {
+                        return new Date(date).toLocaleDateString("en-us", {month: "2-digit", day: "2-digit"})
+                    }}/>
                 <YAxis domain={[1, 5]}/>
                 <Tooltip />
                 <Line type="monotone" dataKey="rank" stroke="#82ca9d" activeDot={{ r: 8 }} />
